@@ -24,7 +24,6 @@ function Navbar() {
 		<div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
 		  <div className="flex items-center" >
 			<NavbarLink href='/' title='Home' />
-			<NavbarLink href='/test' title='Catalog' />
 		  </div>
 
 		  <CartWidget />

@@ -1,10 +1,9 @@
 import React from 'react';
 import {BrowserRouter, Routes, Route} from 'react-router-dom';
 import Navbar from '@components/Navbar/Navbar';
-import ProductListing from '@components/ProductListing/ProductListing'
 import Cart from '@components/Cart/Cart';
-import TestCatalog from '@components/TestCatalog/TestCatalog';
-import { CartContextProvider } from 'src/context/CartContext/CartContext';
+import CatalogLoader from '@components/Catalog/CatalogLoader';
+import { CartApiContextProvider } from 'src/context/CartApiContext/CartApiContext';
 import { ApiContextProvider } from 'src/context/ApiContext/ApiContext';
 
 function App() {
@@ -12,16 +11,15 @@ function App() {
         <div className="App">
             
             <ApiContextProvider>
-                <CartContextProvider>
+                <CartApiContextProvider>
                     <BrowserRouter>
                         <Navbar />
                         <Routes>
-                            <Route path="/" element={<ProductListing />}></Route>
-                            <Route path="/test" element={<TestCatalog />}></Route>
+                            <Route path="/" element={<CatalogLoader />}></Route>
                             <Route path="/cart" element={<Cart />}></Route>
                         </Routes>
                     </BrowserRouter>
-                </CartContextProvider>
+                </CartApiContextProvider>
             </ApiContextProvider>
         </div>
     );

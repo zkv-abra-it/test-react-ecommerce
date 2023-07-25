@@ -1,19 +1,15 @@
 import React, {useContext, useEffect, useState} from 'react'
 import { ApiContext } from 'src/context/ApiContext/ApiContext';
-import ProductCard from '@components/ProductCard/ProductCard'
 import Loading from '@components/Loading/Loading';
-import Pagination from '@components/Pagination/Pagination';
-import SortCatalog from './SortCatalog';
-import { getImages, getProducts } from '@components/ApiService/ApiService';
+import Catalog from './Catalog';
 
-function TestCatalog() {
+export default function CatalogLoader() {
     const [isLoading, setIsLoading] = useState(false);
     const [isError, setIsError] = useState(false);
     const [products, setProducts] = useState([]);
     const [sort, setSort] = useState('id');
-    const { token } = useContext(ApiContext)
+    const { token, getImages, getProducts } = useContext(ApiContext)
     
-
     useEffect(() => {
         setIsLoading(true);
 
@@ -30,6 +26,7 @@ function TestCatalog() {
                     id: product.id,
                     name: product.attributes.name,
                     price: product.attributes.prices.find(price => price.quantity === "1")?.price,
+                    unit: product.attributes.prices.find(price => price.quantity === "1")?.unit,
                     img: imageSrc
                 }])
 
@@ -60,21 +57,6 @@ function TestCatalog() {
     }
 
     return (
-        <div className="bg-white">
-            <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6 lg:max-w-7xl lg:px-8">
-                <div className='flex items-center justify-between'>
-                    <h2 className="text-2xl font-bold tracking-tight text-gray-900">Products</h2>
-                    <SortCatalog currentSort={sort} handleChangeSort={handleChangeSort} />
-                </div>
-
-                <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
-                    { products.map( (product) => <ProductCard data={product} /> )}
-                </div>
-            </div>
-
-            <Pagination />
-        </div>
+        <Catalog currentSort={sort} handleChangeSort={handleChangeSort} products={products} />
     )
 }
-
-export default TestCatalog

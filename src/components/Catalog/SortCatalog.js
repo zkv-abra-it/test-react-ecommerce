@@ -5,7 +5,6 @@ const SORTERS_MAP = {
     'createdAt': 'Newest'
 };
 
-
 const SortCatalog = ({ currentSort, handleChangeSort }) => {
     const [open, setOpen] = React.useState(false);
     const [currentSortLabel, setCurrentSortLabel] = React.useState(SORTERS_MAP[currentSort]);

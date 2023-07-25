@@ -2,7 +2,14 @@ import React, { createContext, useEffect, useState, useRef } from 'react'
 import { useCookies } from 'react-cookie'
 
 export const ApiContext = createContext({
-    token: ''
+    token: '',
+    getProducts: () => { },
+    getImages: () => { },
+    getDefaultShoppingList: () => { },
+    getShoppingList: () => { },
+    createShoppingList: () => { },
+    createShoppingListWithItem: () => { },
+    addItemToShoppingList: () => { }
 });
 
 export const ApiContextProvider = ({ children }) => {
@@ -72,9 +79,119 @@ export const ApiContextProvider = ({ children }) => {
         
     }, [cookies.access_token]);
 
+    const getProducts = async (token, params) => {
+        const searchParams = new URLSearchParams(params);
+          
+        const response = await fetch(process.env.REACT_APP_API_URL + '/api/products?' + searchParams.toString(), {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Accept': 'application/vnd.api+json',
+                'X-Include': 'noHateoas;totalCount'
+            }
+        });
+    
+        return await response.json();
+    }
+    
+    const getImages = async (id, token, params) => {
+        const searchParams = new URLSearchParams(params);
+    
+        const response = await fetch(process.env.REACT_APP_API_URL + '/api/products/' + id + '/images?' + searchParams.toString(), {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Accept': 'application/vnd.api+json',
+                'X-Include': 'noHateoas;totalCount'
+            }
+        });
+    
+        return await response.json();
+    }
+
+    const getDefaultShoppingList = async () => {
+        const response = await fetch(process.env.REACT_APP_API_URL + '/api/shoppinglists', {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Accept': 'application/vnd.api+json',
+                'Content-Type': 'application/vnd.api+json',
+                'X-Include': 'noHateoas'
+            },
+        });
+    
+        return await response.json();
+    }
+
+    const getShoppingList = async (id) => {
+        const response = await fetch(process.env.REACT_APP_API_URL + '/api/shoppinglists/' + id, {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Accept': 'application/vnd.api+json',
+                'Content-Type': 'application/vnd.api+json',
+                'X-Include': 'noHateoas'
+            },
+        });
+    
+        return await response.json();
+    }
+    
+    const createShoppingList = async (data) => {
+        const response = await fetch(process.env.REACT_APP_API_URL + '/api/shoppinglists', {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Accept': 'application/vnd.api+json',
+                'Content-Type': 'application/vnd.api+json',
+                'X-Include': 'noHateoas'
+            },
+            body: JSON.stringify(data)
+        });
+    
+        return await response.json();
+    }
+    
+    const createShoppingListWithItem = async (data) => {
+        const response = await fetch(process.env.REACT_APP_API_URL + '/api/shoppinglistitems', {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Accept': 'application/vnd.api+json',
+                'Content-Type': 'application/vnd.api+json',
+                'X-Include': 'noHateoas'
+            },
+            body: JSON.stringify(data)
+        });
+    
+        return await response.json();
+    }
+    
+    const addItemToShoppingList = async (cartId, data) => {
+        const response = await fetch(process.env.REACT_APP_API_URL + '/api/shoppinglistitems/' + cartId + '/items', {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Accept': 'application/vnd.api+json',
+                'Content-Type': 'application/vnd.api+json',
+                'X-Include': 'noHateoas'
+            },
+            body: JSON.stringify(data)
+        });
+    
+        return await response.json();
+    }
+
     return (
         <ApiContext.Provider value={{
-            token
+            token,
+            getProducts,
+            getImages,
+            getDefaultShoppingList,
+            getShoppingList,
+            createShoppingList,
+            createShoppingListWithItem,
+            addItemToShoppingList
           }}>
             {children}
         </ApiContext.Provider>

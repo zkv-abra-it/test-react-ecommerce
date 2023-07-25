@@ -1,14 +1,13 @@
 import React, { useContext } from 'react'
-import { ApiContext } from 'src/context/ApiContext/ApiContext';
-import { CartApiContext } from '@context/CartApiContext/CartApiContext'
+import { CartContext } from 'src/context/CartContext/CartContext'
 
-function ProductCard(props) {
-    const { id, name, price, img } = props.data;
-    const { addItemToCart } = useContext(CartApiContext);
+export default function SampleProductCard(props) {
+    const {id, name, price, img} = props.data
+    const { addItemToCart } = useContext(CartContext);
 
-    const addProductToCart = (e, product) => {
+    const addProductToCart = (e, productData) => {
         e.preventDefault();
-        addItemToCart(product);
+        addItemToCart(productData)
     }
 
     return (
@@ -21,5 +20,3 @@ function ProductCard(props) {
         </a>
     )
 }
-
-export default ProductCard
