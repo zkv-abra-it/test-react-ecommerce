@@ -1,14 +1,13 @@
-import React, {useContext, useEffect, useState} from 'react'
-import { ApiContext } from 'src/context/ApiContext/ApiContext';
+import React, {useEffect, useState} from 'react'
 import Loading from '@components/Loading/Loading';
 import Catalog from './Catalog';
+import { getProducts } from '@services/ApiService';
 
 export default function CatalogLoader() {
     const [isLoading, setIsLoading] = useState(false);
     const [isError, setIsError] = useState(false);
     const [products, setProducts] = useState([]);
     const [sort, setSort] = useState('id');
-    const { token, getImages, getProducts } = useContext(ApiContext)
     
     useEffect(() => {
         setIsLoading(true);
@@ -16,11 +15,14 @@ export default function CatalogLoader() {
         const fetchData = async () => {
             setProducts([]);
 
-            const productsData = await getProducts(token, {'sort': sort, 'page[size]': 8});
+            const { data } = await getProducts({'sort': sort, 'page[size]': 8, 'include': 'images', 'fields[products]': 'name,prices,unit,images'});
+            const productsData = data.data;
+            const images = data.included.filter(item => item.type === 'productimages');
 
-            productsData.data.map(async (product) => {
-                const images = await getImages(product.id, token)
-                const imageSrc = process.env.REACT_APP_API_URL + '/' + images.data[0].attributes.files[0].url
+            productsData.map(async (product) => {
+                const productImages = images.find(image => image.id === product.id)?.attributes?.files;
+                const catalogImage = productImages.find(productImage => productImage.dimension === 'product_original');
+                const imageSrc = process.env.REACT_APP_API_URL + '/' + catalogImage.url
 
                 setProducts(prev => [...prev, {
                     id: product.id,
@@ -34,15 +36,13 @@ export default function CatalogLoader() {
             });
         }
 
-        if (token) {
-            fetchData()
-                .catch((err) => {
-                    console.error(err);
-                     setIsLoading(false);
-                      setIsError(true);
-                    });
-        }
-    }, [token, sort]);
+        fetchData()
+            .catch((err) => {
+                console.error(err);
+                    setIsLoading(false);
+                    setIsError(true);
+                });
+    }, [sort]);
 
     const handleChangeSort = (newSortValue) => {
         setSort(newSortValue);

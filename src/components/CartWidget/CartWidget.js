@@ -1,9 +1,9 @@
-import React, { useContext, useEffect } from 'react';
-import { CartContext } from 'src/context/CartContext/CartContext'
+import React, { useContext } from 'react';
+import { CartApiContext } from '@context/CartApiContext/CartApiContext'
 import { Link } from 'react-router-dom';
 
 function CartWidget() {
-    const { cartQuantity } = useContext(CartContext);
+    const { cartQuantity } = useContext(CartApiContext);
 
     return (
         <div className="flex items-center">

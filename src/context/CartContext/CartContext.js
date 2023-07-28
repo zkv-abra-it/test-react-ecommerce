@@ -1,5 +1,5 @@
 import React, { createContext } from 'react'
-import { useLocalStorage } from '@hooks/useLocalStorage/useLocalStorage';;
+import { useLocalStorage } from '@hooks/useLocalStorage/useLocalStorage';
 
 export const CartContext = createContext({
   cartItems: [],

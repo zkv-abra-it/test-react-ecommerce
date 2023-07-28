@@ -1,18 +1,17 @@
 import React, { useContext } from 'react'
-import { ApiContext } from 'src/context/ApiContext/ApiContext';
 import { CartApiContext } from '@context/CartApiContext/CartApiContext'
 
 function ProductCard(props) {
     const { id, name, price, img } = props.data;
-    const { addItemToCart } = useContext(CartApiContext);
+    const cartApiContext = useContext(CartApiContext);
 
-    const addProductToCart = (e, product) => {
+    const addItemToCart = (e, product) => {
         e.preventDefault();
-        addItemToCart(product);
+        cartApiContext.addItemToCart(product);
     }
 
     return (
-        <a className="group" key={id} onClick={(e) => addProductToCart(e, props.data)}>
+        <a className="group" key={id} onClick={(e) => addItemToCart(e, props.data)}>
             <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7" >
                 <img src={img} alt="catalog product" className="h-full w-full object-cover object-center group-hover:opacity-75" />
             </div>
