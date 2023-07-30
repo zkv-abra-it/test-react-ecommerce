@@ -1,70 +1,57 @@
-# Getting Started with Create React App
+## Setup frontend app
+### Install dependencies
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+#### `npm install`
 
-## Available Scripts
+### Start project
 
-In the project directory, you can run:
+#### `npm start`
 
-### `npm start`
+## Configuring an oro-application to work via API
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### 1. [Enable WebApi in back-office](https://doc.oroinc.com/api/enabling-api-feature/)
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### 2. [Create private and public keys and move them into location specified in the OroOAuth2ServerBundle](https://doc.oroinc.com/bundles/platform/OAuth2ServerBundle/#bundle-docs-platform-oauth2-server-bundle-configuration)
 
-### `npm test`
+#### [Installition guide](https://oauth2.thephpleague.com/installation/#generating-public-and-private-keys)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+**After creating private and public keys, rename them and move them to the correct directory**
 
-### `npm run build`
+`project_dir/var/oauth_private.key`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+`project_dir/var/oauth_public.key`
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### 3. [Create OAuth Applications for front-office](https://doc.oroinc.com/user/back-office/customers/customer-user-oauth-app/#customer-user-oauth-app)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+**Also might create [OAuth Applications for back-office](https://doc.oroinc.com/user/back-office/system/user-management/oauth-app/#oauth-applications)**
 
-### `npm run eject`
+### 4. [Set up cors policy in config.yml file for authorization](https://doc.oroinc.com/bundles/platform/OAuth2ServerBundle/)
+```
+oro_oauth2_server: 
+    authorization_server: 
+        cors: 
+            preflight_max_age: 6000 
+            allow_origins: ['http://localhost:3000'] 
+```
+### 5. [Set up cors policy in config.yml file for request to front-office](https://doc.oroinc.com/backend/api/storefront/)
+```
+frontend_api: 
+        cors: 
+            allow_origins: 
+                - 'http://localhost:3000' 
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+**Note: config.yml by default already contains frontend_api statement, so need to append cors configs there**
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### 6. [Set up cors policy in config.yml file for request to back-office](https://doc.oroinc.com/backend/api/cors/)
+```
+oro_api: 
+    cors: 
+        allow_origins: 
+            - 'http://localhost:3000'
+```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+### 7. Enable guest access in front-office
+#### Configuration -> System -> type in search bar 'guest' -> enable guest access on each displayed page
+#### Customers -> Customers User Roles -> edit role **Non-Authenticated Visitorsle**, edit shoppinglist permissions 
