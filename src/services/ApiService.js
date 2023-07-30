@@ -118,3 +118,23 @@ export const editShoppingListItem = async (id, data) => {
         },
     });
 }
+
+export const createOrder = async (data) => {
+    return await axios.post(process.env.REACT_APP_API_URL + '/api/order/', data, {
+        headers: {
+            'Accept': 'application/vnd.api+json',
+            'Content-Type': 'application/vnd.api+json',
+            'X-Include': 'noHateoas'
+        },
+    });
+}
+
+export const getCountriesWithRegions = async (params) => {
+    return await axios.get(process.env.REACT_APP_API_URL + '/api/countries', {
+        params: params, 
+        headers: {
+            'Accept': 'application/vnd.api+json',
+            'X-Include': 'noHateoas;totalCount'
+        }
+    });
+}

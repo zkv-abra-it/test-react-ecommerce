@@ -1,6 +1,7 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 
-function CartTotalPanel({ cart}) {
+function CartTotalPanel({ cart }) {
     return (
         <div className="mt-6 h-full rounded-lg border bg-white p-6 shadow-md md:mt-0 md:w-1/3">
             <div className="flex justify-between">
@@ -18,7 +19,11 @@ function CartTotalPanel({ cart}) {
                     <p className="mb-1 text-lg font-bold">${cart.attributes.total} USD</p>
                 </div>
             </div>
-            <button className="mt-6 w-full rounded-md bg-zinc-700 py-1.5 font-medium text-white hover:bg-zinc-600">Check out</button>
+            <Link to="/checkout">
+                <button className="mt-6 w-full rounded-md bg-zinc-700 py-1.5 font-medium text-white hover:bg-zinc-600">
+                    Check out
+                </button>
+            </Link>
         </div>
     )
 }

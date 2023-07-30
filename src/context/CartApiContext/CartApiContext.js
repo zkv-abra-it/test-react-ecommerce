@@ -21,7 +21,7 @@ export const CartApiContextProvider = ({ children }) => {
                     setCartItems(data.data);
                 });
             }
-        }).then(() => setIsLoading(false))
+        }).finally(() => setIsLoading(false))
     }, [])
 
     useEffect(() => {
@@ -116,6 +116,122 @@ export const CartApiContextProvider = ({ children }) => {
                 setCart(data.data);
             })
         });
+    }
+
+    const crateOrder = () => {
+        API.createOrder({
+            "data": {
+              "type": "orders",
+              "relationships": {
+                "customerUser": {
+                  "data": {
+                    "type": "customerusers",
+                    "id": "guest1"
+                  }
+                },
+                "billingAddress": {
+                  "data": {
+                    "type": "orderaddresses",
+                    "id": "billing1"
+                  }
+                },
+                "shippingAddress": {
+                  "data": {
+                    "type": "orderaddresses",
+                    "id": "shipping1"
+                  }
+                },
+                "lineItems": {
+                  "data": [
+                    {
+                      "type": "orderlineitems",
+                      "id": "item1"
+                    }
+                  ]
+                }
+              }
+            },
+            "included": [
+              {
+                "type": "customerusers",
+                "id": "guest1",
+                "attributes": {
+                  "email": "Test@example.org"
+                }
+              },
+              {
+                "type": "orderaddresses",
+                "id": "billing1",
+                "attributes": {
+                  "street": "1215 Caldwell Road",
+                  "city": "Rochester",
+                  "postalCode": "14608",
+                  "firstName": "Amanda",
+                  "lastName": "Cole"
+                },
+                "relationships": {
+                  "country": {
+                    "data": {
+                      "type": "countries",
+                      "id": "US"
+                    }
+                  },
+                  "region": {
+                    "data": {
+                      "type": "regions",
+                      "id": "US-NY"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "orderaddresses",
+                "id": "shipping1",
+                "attributes": {
+                  "street": "1215 Caldwell Road",
+                  "city": "Rochester",
+                  "postalCode": "14608",
+                  "firstName": "Amanda",
+                  "lastName": "Cole"
+                },
+                "relationships": {
+                  "country": {
+                    "data": {
+                      "type": "countries",
+                      "id": "US"
+                    }
+                  },
+                  "region": {
+                    "data": {
+                      "type": "regions",
+                      "id": "US-NY"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "orderlineitems",
+                "id": "item1",
+                "attributes": {
+                  "quantity": 3
+                },
+                "relationships": {
+                  "product": {
+                    "data": {
+                      "type": "products",
+                      "id": "2"
+                    }
+                  },
+                  "productUnit": {
+                    "data": {
+                      "type": "productunits",
+                      "id": "item"
+                    }
+                  }
+                }
+              }
+            ]
+          })
     }
 
     const contextHelperFunctions = {

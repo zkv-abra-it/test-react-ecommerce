@@ -8,6 +8,7 @@ export default function CatalogLoader() {
     const [isError, setIsError] = useState(false);
     const [products, setProducts] = useState([]);
     const [sort, setSort] = useState('id');
+    const [page, setPage] = useState(1);
     
     useEffect(() => {
         setIsLoading(true);
@@ -15,7 +16,7 @@ export default function CatalogLoader() {
         const fetchData = async () => {
             setProducts([]);
 
-            const { data } = await getProducts({'sort': sort, 'page[size]': 8, 'include': 'images', 'fields[products]': 'name,prices,unit,images'});
+            const { data } = await getProducts({'sort': sort, 'page[size]': 8, 'page[number]': page, 'include': 'images', 'fields[products]': 'name,prices,unit,images'});
             const productsData = data.data;
             const images = data.included.filter(item => item.type === 'productimages');
 
@@ -42,7 +43,7 @@ export default function CatalogLoader() {
                     setIsLoading(false);
                     setIsError(true);
                 });
-    }, [sort]);
+    }, [sort, page]);
 
     const handleChangeSort = (newSortValue) => {
         setSort(newSortValue);
