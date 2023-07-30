@@ -7,7 +7,7 @@ import { CartApiContextProvider } from '@context/CartApiContext/CartApiContext';
 
 function App() {
     return (
-        <div className="App">
+        <div className="App min-h-screen">
             <CartApiContextProvider>
                 <BrowserRouter>
                     <Navbar />

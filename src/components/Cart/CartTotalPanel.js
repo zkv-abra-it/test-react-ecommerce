@@ -1,9 +1,6 @@
-import React, {useContext} from 'react'
-import { CartApiContext } from 'src/context/CartApiContext/CartApiContext';
+import React from 'react'
 
-function CartTotalPanel() {
-    const { cart } = useContext(CartApiContext);
-
+function CartTotalPanel({ cart}) {
     return (
         <div className="mt-6 h-full rounded-lg border bg-white p-6 shadow-md md:mt-0 md:w-1/3">
             <div className="flex justify-between">

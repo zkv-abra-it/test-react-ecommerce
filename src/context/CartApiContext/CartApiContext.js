@@ -1,5 +1,5 @@
 import React, { createContext, useEffect, useState } from 'react'
-import { getShoppingList, deleteItemFromShoppingList, deleteShoppingList, getDefaultShoppingList, createShoppingList, addItemToShoppingList, getShoppingListItems } from '@services/ApiService';
+import * as API from '@services/ApiService';
 import { addOrReplaceById } from 'src/utils/Utils';
 
 export const CartApiContext = createContext();
@@ -8,19 +8,20 @@ export const CartApiContextProvider = ({ children }) => {
     const [cart, setCart] = useState({});
     const [cartItems, setCartItems] = useState([]);
     const [cartQuantity, setCartQuantity] = useState(0);
+    const [isLoading, setIsLoading] = useState(true); 
 
     useEffect(() => {
-        getDefaultShoppingList().then(({ data }) => {
+        API.getDefaultShoppingList().then(({ data }) => {
             const cartData = data.data;
 
             if (cartData.length) {
                 setCart(cartData[0]);
 
-                getShoppingListItems(cartData[0].id).then(({ data }) => {
+                API.getShoppingListItems(cartData[0].id).then(({ data }) => {
                     setCartItems(data.data);
                 });
             }
-        })
+        }).then(() => setIsLoading(false))
     }, [])
 
     useEffect(() => {
@@ -29,7 +30,7 @@ export const CartApiContextProvider = ({ children }) => {
 
     const addItemToCart = (product) => {
         if (Object.keys(cart).length === 0) {
-            createShoppingList({
+            API.createShoppingList({
                 "data": {
                     "type": "shoppinglists",
                     "attributes": {
@@ -38,64 +39,80 @@ export const CartApiContextProvider = ({ children }) => {
                 }
             }).then(({ data }) => {
                 setCart(data.data);
+                addItem(data.data.id, product);
             });
         } else {
-            addItemToShoppingList(cart.id, {
-                "data": [
-                    {
-                        "type": "shoppinglistitems",
-                        "attributes": {
-                            "quantity": 1
+            addItem(cart.id, product)
+        }
+    }
+
+    function addItem(cartId, product) {
+        API.addItemToShoppingList(cartId, {
+            "data": [
+                {
+                    "type": "shoppinglistitems",
+                    "attributes": {
+                        "quantity": 1
+                    },
+                    "relationships": {
+                        "product": {
+                            "data": {
+                                "type": "products",
+                                "id": product.id
+                            }
                         },
-                        "relationships": {
-                            "product": {
-                                "data": {
-                                    "type": "products",
-                                    "id": product.id
-                                }
-                            },
-                            "unit": {
-                                "data": {
-                                    "type": "productunits",
-                                    "id": product.unit
-                                }
+                        "unit": {
+                            "data": {
+                                "type": "productunits",
+                                "id": product.unit
                             }
                         }
                     }
-                ]
-            }).then(({ data }) => {
-                const newItem = data.data[0];
+                }
+            ]
+        }).then(({ data }) => {
+            const newItem = data.data[0];
 
-                setCartItems(prev => addOrReplaceById(prev, newItem));
-                getShoppingList(cart.id).then(({ data }) => {
-                    setCart(data.data);
-                })
-            });
-        }
+            setCartItems(prev => addOrReplaceById(prev, newItem));
+            API.getShoppingList(cartId).then(({ data }) => {
+                setCart(data.data);
+            })
+        });
     }
 
     const emptyCart = () => {
         if (cart.id) {
-            deleteShoppingList(cart.id).then(() => {
+            API.deleteShoppingList(cart.id).then(() => {
                 setCart({});
-                setCartItems({});
+                setCartItems([]);
             });
         }
     }
 
-    const increaseItemCount = () => {
+    const updateItemCount = (id, quantity) => {
+        API.editShoppingListItem(id, {
+            "data": {
+              "type": "shoppinglistitems",
+              "id": id,
+              "attributes": {
+                "quantity": quantity
+              }
+            }
+        }).then(({ data }) => {
+            const newItem = data.data;
 
-    };
-
-    const decreaseItemCount = () => {
-
+            setCartItems(prev => addOrReplaceById(prev, newItem));
+            API.getShoppingList(cart.id).then(({ data }) => {
+                setCart(data.data);
+            })
+        });
     };
 
     const removeItemFromCart = (itemId) => {
-        deleteItemFromShoppingList(itemId).then(() => {
+        API.deleteItemFromShoppingList(itemId).then(() => {
             setCartItems(cartItems.filter((cartItem) => cartItem.id !== itemId));
 
-            getShoppingList(cart.id).then(({ data }) => {
+            API.getShoppingList(cart.id).then(({ data }) => {
                 setCart(data.data);
             })
         });
@@ -104,11 +121,11 @@ export const CartApiContextProvider = ({ children }) => {
     const contextHelperFunctions = {
         cart,
         cartItems,
+        isLoading,
         addItemToCart,
         cartQuantity,
         emptyCart,
-        increaseItemCount,
-        decreaseItemCount,
+        updateItemCount,
         removeItemFromCart
     };
 

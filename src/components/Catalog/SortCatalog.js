@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 
 const SORTERS_MAP = {
     'id': 'Relevance',
@@ -39,8 +39,8 @@ const SortCatalog = ({ currentSort, handleChangeSort }) => {
             { open &&
                 <div className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
                     <div className="py-1" role="none">
-                        <a onClick={() => handleClick('id', 'Relevance')} className="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-2">Relevance</a>
-                        <a onClick={() => handleClick('createdAt', 'Newest')} className="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-2">Newest</a>
+                        <button onClick={() => handleClick('id', 'Relevance')} className="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-2">Relevance</button>
+                        <button onClick={() => handleClick('createdAt', 'Newest')} className="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-2">Newest</button>
                     </div>
                 </div>
             }

@@ -20,7 +20,7 @@ export const getProduct = async (id, params) => {
     });
 }
     
-export const getImages = async (id, params) => {
+export const getProductImages = async (id, params) => {
     return await axios.get(process.env.REACT_APP_API_URL + '/api/products/' + id + '/images', {
         params: params, 
         headers: {
@@ -100,11 +100,21 @@ export const getShoppingListItems = async (cartId) => {
 }
 
 export const deleteItemFromShoppingList = async (id) => {
-    return await axios.get(process.env.REACT_APP_API_URL + '/api/shoppinglistitems/' + id, {
+    return await axios.delete(process.env.REACT_APP_API_URL + '/api/shoppinglistitems/' + id, {
         headers: {
             'Accept': 'application/vnd.api+json',
             'Content-Type': 'application/vnd.api+json',
             'X-Include': 'noHateoas;totalCount'
+        },
+    });
+}
+
+export const editShoppingListItem = async (id, data) => {
+    return await axios.patch(process.env.REACT_APP_API_URL + '/api/shoppinglistitems/' + id, data, {
+        headers: {
+            'Accept': 'application/vnd.api+json',
+            'Content-Type': 'application/vnd.api+json',
+            'X-Include': 'noHateoas'
         },
     });
 }
