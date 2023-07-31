@@ -26,7 +26,10 @@ function Navbar() {
 			<NavbarLink href='/' title='Home' />
 		  </div>
 
-		  <CartWidget />
+			<div class="flex flex-items">
+		  		<CartWidget />
+				<NavbarLink href='/login' title='Login' />
+			</div>
 		</div>
 	  </nav>
 	)
