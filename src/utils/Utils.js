@@ -1,7 +1,3 @@
-// export function addOrReplaceById(array, element) {
-//     return [...array.filter((obj) => obj.id !== element.id), element];
-// }
-
 export function addOrReplaceById(array, element) {
     const i = array.findIndex(_element => _element.id === element.id);
 
@@ -12,4 +8,4 @@ export function addOrReplaceById(array, element) {
     }
 
     return [...array];
-} 
+}

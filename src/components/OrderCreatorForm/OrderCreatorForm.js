@@ -1,29 +1,23 @@
-import React, { useEffect, useState, useContext } from 'react'
-import { createOrder, getCountriesWithRegions } from '@services/ApiService';
+import React, { useState, useContext } from 'react'
+import { createOrder } from '@services/ApiService';
 import { useNavigate } from "react-router-dom";
 import { CartApiContext } from '@context/CartApiContext/CartApiContext'
+import OrderCountrySelector from './OrderCountrySelector';
 
-function OrderCreatorForm() {
+
+export default function OrderCreatorForm() {
     const [formData, setFormData] = useState({
         first_name: '',
         last_name: '',
         email: '',
-        country: 'US',
-        region: 'US-NY',
+        country: '',
+        region: '',
         street: '',
         city: '',
         zip: ''
     });
     const navigate = useNavigate();
-    const { cartItems } = useContext(CartApiContext);
-
-    // useEffect(() => {
-    //     getCountriesWithRegions({ 'filter[id]': 'US,IL', 'include': 'regions' })
-    //         .then(({ data }) => {
-    //             const countries = data.data;
-    //             const regions = data.included
-    //         })
-    // }, [])
+    const { cartItems, emptyCart } = useContext(CartApiContext);
 
     function getOrderAddressesInfo(id) {
         return {
@@ -63,10 +57,17 @@ function OrderCreatorForm() {
         }
     }
 
-    function getCartItems() {
+    function getLineItemsIds() {
         return cartItems.map((item, i) => ({
             "type": "orderlineitems",
-            "id": `item${i}`,
+            "id": `item${i + 1}`
+        }))
+    }
+
+    function getLineItems() {
+        return cartItems.map((item, i) => ({
+            "type": "orderlineitems",
+            "id": `item${i + 1}`,
             "attributes": {
                 "quantity": item.attributes.quantity
             },
@@ -96,7 +97,8 @@ function OrderCreatorForm() {
         }))
     }
 
-    const handleSubmit = () => {
+    const handleSubmit = (e) => {
+        e.preventDefault();
         createOrder({
             "data": {
                 "type": "orders",
@@ -120,12 +122,7 @@ function OrderCreatorForm() {
                         }
                     },
                     "lineItems": {
-                        "data": [
-                            {
-                                "type": "orderlineitems",
-                                "id": "item1"
-                            }
-                        ]
+                        "data": getLineItemsIds()
                     }
                 }
             },
@@ -133,8 +130,11 @@ function OrderCreatorForm() {
                 getCustomerInfo(),
                 getOrderAddressesInfo('billing1'),
                 getOrderAddressesInfo('shipping1'),
-                ...getCartItems()
+                ...getLineItems()
             ]
+        }).then(() => {
+            emptyCart();
+            navigate('/', { replace: true });
         });
     }
 
@@ -143,7 +143,7 @@ function OrderCreatorForm() {
             <h1 className="mb-10 text-center text-2xl font-bold">Create order</h1>
 
             <div className="mx-auto max-w-3xl justify-center px-6">
-                <form>
+                <form onSubmit={(e) => handleSubmit(e)}>
                     <div className="space-y-12">
                         <div className="border-b border-gray-900/10 pb-12">
                             <h2 className="text-base font-semibold leading-7 text-gray-900">Personal Information</h2>
@@ -210,43 +210,9 @@ function OrderCreatorForm() {
                         <div className="border-b border-gray-900/10 pb-12">
                             <h2 className="text-base font-semibold leading-7 text-gray-900">Billing / Shipping</h2>
 
+                            <OrderCountrySelector country={formData.country} region={formData.region} handleChange={handleChange} setFormData={setFormData} />
+
                             <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                                <div className="sm:col-span-3">
-                                    <label htmlFor="country" className="block text-sm font-medium leading-6 text-gray-900">
-                                        Country
-                                    </label>
-                                    <div className="mt-2">
-                                        <select
-                                            id="country"
-                                            name="country"
-                                            autoComplete="country-name"
-                                            required
-                                            className="block w-full outline-none rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-zinc-600 sm:max-w-xs sm:text-sm sm:leading-6"
-                                        >
-                                            <option>United States</option>
-                                            <option>Israel</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div className="sm:col-span-3">
-                                    <label htmlFor="country" className="block text-sm font-medium leading-6 text-gray-900">
-                                        Region
-                                    </label>
-                                    <div className="mt-2">
-                                        <select
-                                            id="region"
-                                            name="region"
-                                            autoComplete="region-name"
-                                            required
-                                            className="block w-full outline-none rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-zinc-600 sm:max-w-xs sm:text-sm sm:leading-6"
-                                        >
-                                            <option>United States</option>
-                                            <option>Israel</option>
-                                        </select>
-                                    </div>
-                                </div>
-
                                 <div className="col-span-full">
                                     <label htmlFor="street-address" className="block text-sm font-medium leading-6 text-gray-900">
                                         Street address
@@ -256,7 +222,7 @@ function OrderCreatorForm() {
                                             onChange={(e) => handleChange(e)}
                                             value={formData.street}
                                             type="text"
-                                            name="street-address"
+                                            name="street"
                                             id="street-address"
                                             autoComplete="street-address"
                                             required
@@ -275,8 +241,8 @@ function OrderCreatorForm() {
                                             value={formData.city}
                                             type="text"
                                             name="city"
-                                            id="city"
-                                            autoComplete="address-level2"
+                                            id="address-city"
+                                            autoComplete="address-city"
                                             required
                                             className="block w-full outline-none rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-zinc-600 sm:text-sm sm:leading-6"
                                         />
@@ -292,7 +258,7 @@ function OrderCreatorForm() {
                                             onChange={(e) => handleChange(e)}
                                             value={formData.zip}
                                             type="text"
-                                            name="postal-code"
+                                            name="zip"
                                             id="postal-code"
                                             autoComplete="postal-code"
                                             required
@@ -322,5 +288,3 @@ function OrderCreatorForm() {
 
     )
 }
-
-export default OrderCreatorForm
