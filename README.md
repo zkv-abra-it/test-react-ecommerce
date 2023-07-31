@@ -35,13 +35,14 @@ oro_oauth2_server:
 ```
 ### 5. [Set up cors policy in config.yml file for request to front-office](https://doc.oroinc.com/backend/api/storefront/)
 ```
-frontend_api: 
+oro_frontend:
+    frontend_api: 
         cors: 
             allow_origins: 
                 - 'http://localhost:3000' 
 ```
 
-**Note: config.yml by default already contains frontend_api statement, so need to append cors configs there**
+**Note: config.yml by default already contains oro_frontend statement, so need to append cors configs there**
 
 
 ### 6. [Set up cors policy in config.yml file for request to back-office](https://doc.oroinc.com/backend/api/cors/)
@@ -53,5 +54,5 @@ oro_api:
 ```
 
 ### 7. Enable guest access in front-office
-#### Configuration -> System -> type in search bar 'guest' -> enable guest access on each displayed page
+#### Configuration -> System -> type in search bar 'guest' -> enable guest access on each displayed categories
 #### Customers -> Customers User Roles -> edit role **Non-Authenticated Visitorsle**, edit shoppinglist permissions 
