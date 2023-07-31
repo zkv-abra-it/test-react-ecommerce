@@ -52,7 +52,9 @@ export default function OrderCreatorForm() {
             "type": "customerusers",
             "id": "guest1",
             "attributes": {
-                "email": formData.email
+                "email": formData.email,
+                "firstName": formData.first_name,
+                "lastName": formData.last_name
             }
         }
     }

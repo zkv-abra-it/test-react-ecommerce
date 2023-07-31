@@ -120,8 +120,6 @@ export const editShoppingListItem = async (id, data) => {
 }
 
 export const createOrder = async (data) => {
-    console.log(data);
-
     return await axios.post(process.env.REACT_APP_API_URL + '/api/orders', data, {
         headers: {
             'Accept': 'application/vnd.api+json',
