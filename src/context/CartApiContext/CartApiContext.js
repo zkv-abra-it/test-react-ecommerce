@@ -1,6 +1,7 @@
-import React, { createContext, useEffect, useState } from 'react'
+import React, { createContext, useContext, useEffect, useState } from 'react'
 import * as API from '@services/ApiService';
 import { addOrReplaceById } from 'src/utils/Utils';
+import { AuthContext } from '@context/AuthContext/AuthContext';
 
 export const CartApiContext = createContext();
 
@@ -8,21 +9,30 @@ export const CartApiContextProvider = ({ children }) => {
     const [cart, setCart] = useState({});
     const [cartItems, setCartItems] = useState([]);
     const [cartQuantity, setCartQuantity] = useState(0);
-    const [isLoading, setIsLoading] = useState(true); 
+    const [isLoading, setIsLoading] = useState(true);
+    const authContext = useContext(AuthContext);
 
     useEffect(() => {
-        API.getDefaultShoppingList().then(({ data }) => {
-            const cartData = data.data;
+        if (authContext.isLoading) {
+            setIsLoading(true);
+        }
 
-            if (cartData.length) {
-                setCart(cartData[0]);
-
-                API.getShoppingListItems(cartData[0].id).then(({ data }) => {
-                    setCartItems(data.data);
-                });
-            }
-        }).finally(() => setIsLoading(false))
-    }, [])
+        if (!authContext.isLoading) {
+            API.getDefaultShoppingList().then(({ data }) => {
+                const cartData = data.data;
+    
+                if (cartData.length) {
+                    setCart(cartData[0]);
+    
+                    API.getShoppingListItems(cartData[0].id).then(({ data }) => {
+                        setCartItems(data.data);
+                    });
+                } else {
+                    setCartItems([]);
+                }
+            }).finally(() => setIsLoading(false))
+        }
+    }, [authContext.isAuth, authContext.isLoading])
 
     useEffect(() => {
         setCartQuantity(cartItems.length);
