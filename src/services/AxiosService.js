@@ -6,7 +6,7 @@ axios.interceptors.request.use(async config => {
         if (localStorage.getItem('access_token')) {
             config.headers['Authorization'] = `Bearer ${localStorage.getItem('access_token')}`
         } else {
-            const {access_token, refresh_token} = await getAccessToken(); 
+            const {access_token, refresh_token} = await getAccessToken('guest', 'guest'); 
             localStorage.setItem('access_token', access_token);
             localStorage.setItem('refresh_token', refresh_token);
             config.headers['Authorization'] = `Bearer ${localStorage.getItem('access_token')}`
@@ -31,6 +31,10 @@ axios.interceptors.response.use(
             axios.defaults.headers.common['Authorization'] = 'Bearer ' + response.access_token;
             return axios(originalRequest);
         }
+
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');   
+        return Promise.reject(error);
     }
 )
 

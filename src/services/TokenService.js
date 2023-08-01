@@ -1,4 +1,4 @@
-export const getAccessToken = async () => {
+export const getAccessToken = async (username, password) => {
     const response = await fetch(process.env.REACT_APP_API_URL + '/oauth2-token', {
         method: 'POST',
         headers: {
@@ -8,8 +8,8 @@ export const getAccessToken = async () => {
             "grant_type": "password",
             "client_id": process.env.REACT_APP_OAUTH_CLIENT_ID,
             "client_secret": process.env.REACT_APP_OAUTH_CLIENT_SECRET,
-            "username": "guest",
-            "password": "guest"
+            "username": username,
+            "password": password
         }),
     });
 
