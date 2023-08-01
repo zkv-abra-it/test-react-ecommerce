@@ -138,3 +138,13 @@ export const getCountriesWithRegions = async (params) => {
         }
     });
 }
+
+export const getCurrentCustomer = async (params) => {
+    return await axios.get(process.env.REACT_APP_API_URL + '/api/customerusers/mine', {
+        params: params, 
+        headers: {
+            'Accept': 'application/vnd.api+json',
+            'X-Include': 'noHateoas;totalCount'
+        }
+    });
+}

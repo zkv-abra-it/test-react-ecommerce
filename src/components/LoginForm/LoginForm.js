@@ -1,11 +1,20 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
+import { Credentials } from './credentials';
+import { AuthContext } from '@context/AuthContext/AuthContext';
+import { useNavigate } from "react-router-dom";
 
 export default function LoginForm() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState(Credentials.email);
+  const [password, setPassword] = useState(Credentials.password);
+  const { login } = useContext(AuthContext);
+  const navigate = useNavigate();
 
-  const handleSubmit = () => {
-    
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    login(email, password).then(() => {
+      navigate('/', { replace: true });
+    });
   }
   
   return (
@@ -17,7 +26,7 @@ export default function LoginForm() {
         </div>
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form onSubmit={handleSubmit} className="space-y-6" action="#" method="POST">
+          <form onSubmit={(e) => handleSubmit(e)} className="space-y-6" action="#" method="POST">
             <div>
               <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
                 Email address

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import CartWidget from '@components/CartWidget/CartWidget';
 import NavbarLink from '@components/Navbar/NavbarLink';
+import NavLoginLink from './NavLoginLink';
 
 function Navbar() {
 	const [stickyNav, setStickyNav] = useState(false);
@@ -26,9 +27,9 @@ function Navbar() {
 			<NavbarLink href='/' title='Home' />
 		  </div>
 
-			<div class="flex flex-items">
+			<div className="flex flex-items">
 		  		<CartWidget />
-				<NavbarLink href='/login' title='Login' />
+				<NavLoginLink />
 			</div>
 		</div>
 	  </nav>
