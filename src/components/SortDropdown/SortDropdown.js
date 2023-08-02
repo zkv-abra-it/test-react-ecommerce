@@ -5,13 +5,9 @@ const SORTERS_MAP = {
     'createdAt': 'Newest'
 };
 
-const SortCatalog = ({ currentSort, handleChangeSort }) => {
+export default function SortDropdown ({ currentSort, handleChangeSort }) {
     const [open, setOpen] = React.useState(false);
     const [currentSortLabel, setCurrentSortLabel] = React.useState(SORTERS_MAP[currentSort]);
-
-    const handleOpen = () => {
-        setOpen(!open);
-    };
 
     const handleClick = (field, label) => {
         if (field === currentSort) return;
@@ -19,9 +15,7 @@ const SortCatalog = ({ currentSort, handleChangeSort }) => {
         setOpen(false);
         setCurrentSortLabel(label);
 
-        if (handleChangeSort) {
-            handleChangeSort(field)
-        }
+        handleChangeSort(field)
     }
 
     return (
@@ -29,7 +23,7 @@ const SortCatalog = ({ currentSort, handleChangeSort }) => {
             <div className='flex items-center'>
                 <span className='w-full pr-3'>Sorted by:</span>
 
-                <button onClick={handleOpen} type="button" className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50" id="menu-button" aria-expanded="true" aria-haspopup="true">
+                <button onClick={() => setOpen(!open)} type="button" className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50" id="menu-button" aria-expanded="true" aria-haspopup="true">
                     {currentSortLabel}
                     <svg className="-mr-1 h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                         <path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clipRule="evenodd" />
@@ -48,5 +42,3 @@ const SortCatalog = ({ currentSort, handleChangeSort }) => {
 
     )
 }
-
-export default SortCatalog

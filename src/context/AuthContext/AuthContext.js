@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect } from 'react'
-import { getAccessToken, refreshAccessToken } from "@services/TokenService";
+import { getAccessToken } from "@services/TokenService";
 import { getCurrentCustomer } from '@services/ApiService';
 
 export const AuthContext = createContext();

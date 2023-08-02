@@ -1,9 +1,10 @@
 import React, {useEffect, useState} from 'react'
 import Loading from '@components/Loading/Loading';
-import Catalog from './Catalog';
+import Listing from '@components/Listing/Listing';
 import { getProducts } from '@services/ApiService';
+import { getProductWithImages } from 'src/utils/Normalize';
 
-export default function CatalogLoader() {
+export default function Catalog() {
     const [isLoading, setIsLoading] = useState(false);
     const [isError, setIsError] = useState(false);
     const [products, setProducts] = useState([]);
@@ -17,23 +18,18 @@ export default function CatalogLoader() {
             setProducts([]);
 
             const { data } = await getProducts({'sort': sort, 'page[size]': 8, 'page[number]': page, 'include': 'images', 'fields[products]': 'name,prices,unit,images'});
-            const productsData = data.data;
-            const images = data.included.filter(item => item.type === 'productimages');
-
-            productsData.map(async (product) => {
-                const productImages = images.find(image => image.id === product.id)?.attributes?.files;
-                const catalogImage = productImages.find(productImage => productImage.dimension === 'product_original');
-                const imageSrc = process.env.REACT_APP_API_URL + '/' + catalogImage.url
+            const productsData = getProductWithImages({products: data.data, images: data.included.filter(item => item.type === 'productimages')});
+            
+            productsData.map((product) => {
+                const catalogImage = product.images.find(productImage => productImage.dimension === 'product_original');
 
                 setProducts(prev => [...prev, {
                     id: product.id,
-                    name: product.attributes.name,
-                    price: product.attributes.prices.find(price => price.quantity === "1")?.price,
-                    unit: product.attributes.prices.find(price => price.quantity === "1")?.unit,
-                    img: imageSrc
+                    name: product.name,
+                    price: parseFloat(product.prices.find(price => price.quantity === "1")?.price).toFixed(2),
+                    unit: product.prices.find(price => price.quantity === "1")?.unit,
+                    img: process.env.REACT_APP_API_URL + '/' + catalogImage.url
                 }])
-
-                setIsLoading(false);
             });
         }
 
@@ -42,7 +38,8 @@ export default function CatalogLoader() {
                 console.error(err);
                     setIsLoading(false);
                     setIsError(true);
-                });
+                })
+            .finally(() => setIsLoading(false));
     }, [sort, page]);
 
     const handleChangeSort = (newSortValue) => {
@@ -58,6 +55,6 @@ export default function CatalogLoader() {
     }
 
     return (
-        <Catalog currentSort={sort} handleChangeSort={handleChangeSort} products={products} />
+        <Listing currentSort={sort} handleChangeSort={handleChangeSort} products={products} />
     )
 }

@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import { CartApiContext } from '@context/CartApiContext/CartApiContext'
 import CartItem from '@components/Cart/CartItem'
-import CartTotalPanel from '@components/Cart/CartTotalPanel'
+import { CartTotalPanelMemo } from '@components/Cart/CartTotalPanel'
 import Loading from '@components/Loading/Loading';
 
 function Cart() {
@@ -33,7 +33,7 @@ function Cart() {
 
 					{cartItems.map((item) => <CartItem key={item.id} cartItem={item} />)}
 				</div>
-				<CartTotalPanel cart={cart} />
+				<CartTotalPanelMemo total={cart.attributes.total} />
 			</div>
 		</div>
 	)

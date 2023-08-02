@@ -1,21 +1,8 @@
-import React, { useContext, useState } from 'react'
-import { Credentials } from './credentials';
-import { AuthContext } from '@context/AuthContext/AuthContext';
+import React from 'react'
 import { useNavigate } from "react-router-dom";
 
-export default function LoginForm() {
-  const [email, setEmail] = useState(Credentials.email);
-  const [password, setPassword] = useState(Credentials.password);
-  const { login } = useContext(AuthContext);
+export default function LoginForm({credentials, handleChange, handleSubmit}) {
   const navigate = useNavigate();
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    login(email, password).then(() => {
-      navigate('/', { replace: true });
-    });
-  }
   
   return (
     <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
@@ -35,8 +22,8 @@ export default function LoginForm() {
                 <input
                   id="email"
                   name="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  value={credentials.email}
+                  onChange={(e) => handleChange(e)}
                   type="email"
                   autoComplete="email"
                   required
@@ -55,8 +42,8 @@ export default function LoginForm() {
                 <input
                   id="password"
                   name="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  value={credentials.password}
+                  onChange={(e) => handleChange(e)}
                   type="password"
                   autoComplete="current-password"
                   required

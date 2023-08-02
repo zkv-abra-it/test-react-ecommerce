@@ -18,14 +18,14 @@ export const CartApiContextProvider = ({ children }) => {
         }
 
         if (!authContext.isLoading) {
-            API.getDefaultShoppingList().then(({ data }) => {
+            API.getDefaultShoppingList().then(async ({ data }) => {
                 const cartData = data.data;
     
                 if (cartData.length) {
                     setCart(cartData[0]);
     
-                    API.getShoppingListItems(cartData[0].id).then(({ data }) => {
-                        setCartItems(data.data);
+                    return API.getShoppingListItems(cartData[0].id).then(({ data }) => {
+                         setCartItems(data.data);
                     });
                 } else {
                     setCartItems([]);

@@ -6,7 +6,9 @@ module.exports = function override(config) {
     '@hooks': 'src/hooks',
     '@context': 'src/context',
     '@services': 'src/services',
-    '@assets' : 'src/assets'
+    '@assets' : 'src/assets',
+    '@pages' : 'src/pages',
+    '@utils' : 'src/utils'
   })(config)
 
   return config

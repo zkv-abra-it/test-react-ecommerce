@@ -22,18 +22,21 @@ axios.interceptors.response.use(
     },
     async error => {
         const originalRequest = error.config;
-        if (localStorage.getItem('refresh_token') && error.response.status === 401 && !originalRequest._retry) {
-            originalRequest._retry = true;
+        if (localStorage.getItem('refresh_token') && error.response.status === 401) {
+            if (!originalRequest._retry) {
+                originalRequest._retry = true;
 
-            const response = await refreshAccessToken(localStorage.getItem('refresh_token'));     
-            localStorage.setItem('access_token', response.access_token);
-            localStorage.setItem('refresh_token', response.refresh_token);     
-            axios.defaults.headers.common['Authorization'] = 'Bearer ' + response.access_token;
-            return axios(originalRequest);
+                const response = await refreshAccessToken(localStorage.getItem('refresh_token'));     
+                localStorage.setItem('access_token', response.access_token);
+                localStorage.setItem('refresh_token', response.refresh_token);     
+                axios.defaults.headers.common['Authorization'] = 'Bearer ' + response.access_token;
+                return axios(originalRequest);
+            } else {
+                localStorage.removeItem('access_token');
+                localStorage.removeItem('refresh_token');   
+            }
         }
-
-        localStorage.removeItem('access_token');
-        localStorage.removeItem('refresh_token');   
+        
         return Promise.reject(error);
     }
 )

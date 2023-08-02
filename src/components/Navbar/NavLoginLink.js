@@ -17,7 +17,7 @@ export default function NavLoginLink() {
 
     return (
       <div className='flex flex-item'>
-        <span className='px-6 py-2 text-slate-700'>{userInfo?.email}</span>
+        <span className='px-4 py-2 text-slate-700'>{userInfo?.email}</span>
         <button 
         onClick={handleLogout}
         className='px-3 py-2 rounded-md bg-zinc-700 py-1.5 font-medium text-white hover:bg-zinc-600'>

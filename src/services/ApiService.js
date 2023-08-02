@@ -129,7 +129,7 @@ export const createOrder = async (data) => {
     });
 }
 
-export const getCountriesWithRegions = async (params) => {
+export const getCountries = async (params) => {
     return await axios.get(process.env.REACT_APP_API_URL + '/api/countries', {
         params: params, 
         headers: {
